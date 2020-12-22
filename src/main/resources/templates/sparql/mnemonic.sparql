@@ -1,0 +1,40 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX jpo: <http://rdf.jpostdb.org/ontology/jpost.owl#>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+PREFIX unimod: <http://www.unimod.org/obo/unimod.obo#>
+PREFIX uniprot: <http://purl.uniprot.org/core/>
+PREFIX tax: <http://purl.bioontology.org/ontology/NCBITAXON/>
+PREFIX owl: <http://www.geneontology.org/formats/oboInOwl#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX : <http://rdf.jpostdb.org/entry/>
+
+SELECT DISTINCT ?accession ?mnemonic WHERE {
+    {
+        SELECT DISTINCT ?protein ?dataset WHERE {
+            {
+                SELECT DISTINCT ?dataset WHERE {
+                    VALUES ?dataset { {{dataset}} }
+                    ?dataset a jpo:Dataset .
+                    ?project jpo:hasDataset ?dataset .
+                }
+            }
+            ?dataset jpo:hasProtein ?db_protein .
+            ?db_protein jpo:hasDatabaseSequence ?protein .
+        }
+    }
+    ?protein ^jpo:hasDatabaseSequence/rdfs:label ?accession .
+    ?protein a uniprot:Protein ;
+        uniprot:mnemonic ?mnemonic .
+    ?dataset dct:identifier ?dataset_id ;
+        jpo:hasProtein ?db_protein .
+    ?db_protein jpo:hasDatabaseSequence ?protein ;
+        jpo:hasPeptideEvidence/jpo:hasPeptide ?peptide .
+    ?peptide dct:identifier ?peptide_id;
+        jpo:hasSequence [
+            a obo:MS_1001344 ;
+            rdf:value ?sequence ] .
+}

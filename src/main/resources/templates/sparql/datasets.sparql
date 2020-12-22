@@ -1,0 +1,7 @@
+PREFIX jpost: <http://rdf.jpostdb.org/ontology/jpost.owl#>
+PREFIX dc: <http://purl.org/dc/terms/>
+
+select distinct ?label where {
+    ?dataset a jpost:Dataset ;
+        dc:identifier ?label .
+}

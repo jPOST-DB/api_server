@@ -1,0 +1,16 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX jpost: <http://rdf.jpostdb.org/ontology/jpost.owl#>
+PREFIX : <http://rdf.jpostdb.org/entry/>
+PREFIX uniprot: <http://purl.uniprot.org/core/>
+
+SELECT DISTINCT ?prot ?pep_seq ?uniprot ?mnemonic
+WHERE {
+  VALUES ?ds { {{dataset}} }
+  ?ds jpost:hasPeptide ?pep .
+  ?prot jpost:hasPeptideEvidence/jpost:hasPeptide ?pep .
+  ?pep jpost:hasSequence/rdf:value ?pep_seq .
+  ?prot rdfs:label ?uniprot .
+} ORDER BY ?uniprot
+
