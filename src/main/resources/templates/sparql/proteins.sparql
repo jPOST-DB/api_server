@@ -5,12 +5,20 @@ PREFIX jpost: <http://rdf.jpostdb.org/ontology/jpost.owl#>
 PREFIX : <http://rdf.jpostdb.org/entry/>
 PREFIX uniprot: <http://purl.uniprot.org/core/>
 
-SELECT DISTINCT ?prot ?pep_seq ?uniprot ?mnemonic
+SELECT DISTINCT ?prot ?pep_seq ?uniprot ?jpost_score
 WHERE {
   VALUES ?ds { {{dataset}} }
   ?ds jpost:hasPeptide ?pep .
   ?prot jpost:hasPeptideEvidence/jpost:hasPeptide ?pep .
   ?pep jpost:hasSequence/rdf:value ?pep_seq .
   ?prot rdfs:label ?uniprot .
+
+  {
+       SELECT ?pep (max(?score) as ?jpost_score) WHERE {
+           ?pep jpost:hasPsm/<http://semanticscience.org/resource/SIO_000216> ?node .
+           ?node a jpost:JpostScore ;
+               <http://semanticscience.org/resource/SIO_000300> ?score .
+        } GROUP BY ?pep
+    }
 } ORDER BY ?uniprot
 

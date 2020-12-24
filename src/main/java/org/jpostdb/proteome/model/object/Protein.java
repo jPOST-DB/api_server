@@ -36,6 +36,16 @@ public class Protein implements Serializable {
 		this.peptides = peptides;
 	}
 
+	public void cutOff(double score) {
+		List<Peptide> list = new ArrayList<Peptide>();
+		for(Peptide peptide : this.peptides) {
+			if(peptide.getScore() >= score) {
+				list.add(peptide);
+			}
+		}
+		this.peptides = list;
+	}
+
 	@Override
 	public String toString() {
 		String string = "Protein(" + this.uniprot + ")";

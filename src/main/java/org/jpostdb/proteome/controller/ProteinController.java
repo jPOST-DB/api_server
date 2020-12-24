@@ -22,12 +22,22 @@ public class ProteinController {
 	@CrossOrigin
 	public List<String> getProteins(
 			@RequestParam(value = "datasets", required = false) String datasets,
-			@RequestParam(value = "accession", required = false) String accession
+			@RequestParam(value = "accession", required = false) String accession,
+			@RequestParam(value  ="score", required = false) String scoreString
 	) throws Exception {
 		boolean isAccession = false;
 		if(accession != null) {
 			try {
 				isAccession = Boolean.parseBoolean(accession);
+			}
+			catch(Exception e) {
+			}
+		}
+
+		double score = 0.0;
+		if(scoreString != null) {
+			try {
+				score = Double.parseDouble(scoreString);
 			}
 			catch(Exception e) {
 			}
@@ -68,7 +78,7 @@ public class ProteinController {
 
 		long start = System.currentTimeMillis();
 
-		List<String> result = this.service.getProteins(list, isAccession);
+		List<String> result = this.service.getProteins(list, score, isAccession);
 
 		long end = System.currentTimeMillis();
 		double time = (double)(end - start) / 1000.0;

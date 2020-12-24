@@ -29,7 +29,7 @@ public class PeptideService {
 	@Autowired
 	private CacheFileRepository cacheRepository;
 
-	public List<Protein> getProteins(String dataset) throws Exception {
+	public List<Protein> getProteins(String dataset, double score) throws Exception {
 		List<Protein> proteins = new ArrayList<Protein>();
 		Set<String> uniprots = new HashSet<String>();
 
@@ -43,8 +43,11 @@ public class PeptideService {
 			List<Protein> subList = (List<Protein>)stream.readObject();
 			for(Protein protein : subList) {
 				if(!uniprots.contains(protein.getUniprot())) {
-					proteins.add(protein);
-					uniprots.add(protein.getUniprot());
+					protein.cutOff(score);
+					if(protein.getPeptides().size() > 0) {
+						proteins.add(protein);
+						uniprots.add(protein.getUniprot());
+					}
 				}
 			}
 			stream.close();
@@ -76,13 +79,13 @@ public class PeptideService {
 	}
 
 
-	public List<Protein> getProteins(List<String> datasets) throws Exception {
-		List<Protein> result = this.getProteinsFromCache(datasets);
+	public List<Protein> getProteins(List<String> datasets, double score) throws Exception {
+		List<Protein> result = this.getProteinsFromCache(datasets, score);
 
 		if(result == null) {
 			result = new ArrayList<Protein>();
 			for(String dataset : datasets) {
-				result.addAll(this.getProteins(dataset));
+				result.addAll(this.getProteins(dataset, score));
 			}
 			this.saveCache(datasets, result);
 		}
@@ -91,7 +94,7 @@ public class PeptideService {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<Protein> getProteinsFromCache(List<String> datasets) throws Exception {
+	protected List<Protein> getProteinsFromCache(List<String> datasets, double score) throws Exception {
 		List<String> list = new ArrayList<String>();
 		list.addAll(datasets);
 		list.sort(
@@ -127,7 +130,16 @@ public class PeptideService {
 				}
 			}
 		}
-		return proteins;
+
+		List<Protein> cutOffProteins = new ArrayList<Protein>();
+		for(Protein protein : proteins) {
+			protein.cutOff(score);
+			if(protein.getPeptides().size() > 0) {
+				cutOffProteins.add(protein);
+			}
+		}
+
+		return cutOffProteins;
 	}
 
 	protected void saveCache(List<String> datasets, List<Protein> proteins) throws Exception {

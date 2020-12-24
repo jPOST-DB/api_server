@@ -7,6 +7,7 @@ public class Peptide implements Serializable {
 
 	private String sequence;
 	private String dummy;
+	private Double score;
 
 	public Peptide(String sequence) {
 		this.setSequence(sequence);
@@ -29,6 +30,14 @@ public class Peptide implements Serializable {
 
 	public String getDummy() {
 		return this.dummy;
+	}
+
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
 	}
 
 	@Override

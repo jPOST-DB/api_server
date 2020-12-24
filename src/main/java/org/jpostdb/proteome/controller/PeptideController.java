@@ -21,7 +21,8 @@ public class PeptideController {
 	@RequestMapping("/peptides")
 	@ResponseBody
 	public Response getPeptides(
-			@RequestParam(value  ="datasets", required = false) String datasets
+			@RequestParam(value  ="datasets", required = false) String datasets,
+			@RequestParam(value  ="score", required = false) String scoreString
 	) throws Exception {
 		Response response = new Response();
 		response.setSuccess(true);
@@ -59,9 +60,14 @@ public class PeptideController {
 			}
 		}
 
+		double score = 0.0;
+		if(scoreString != null && !scoreString.isEmpty()) {
+			score = Double.parseDouble(scoreString);
+		}
+
 		long start = System.currentTimeMillis();
 
-		List<Protein> result = this.service.getProteins(list);
+		List<Protein> result = this.service.getProteins(list, score);
 		response.setResult(result);
 
 		long end = System.currentTimeMillis();

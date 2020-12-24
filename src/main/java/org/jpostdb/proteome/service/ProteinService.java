@@ -20,9 +20,9 @@ public class ProteinService {
 	@Autowired
 	private PeptideService pepService;
 
-	public List<String> getProteins(List<String> datasets, boolean accession) throws Exception {
+	public List<String> getProteins(List<String> datasets, double score, boolean accession) throws Exception {
 		List<String> answer = new ArrayList<String>();
-		List<Protein> proteins = this.pepService.getProteins(datasets);
+		List<Protein> proteins = this.pepService.getProteins(datasets, score);
 
 		Group group = new Group();
 		Set<String> proteinSet = new HashSet<String>();

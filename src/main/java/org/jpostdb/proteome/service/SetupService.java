@@ -137,6 +137,13 @@ public class SetupService {
 
 					String uniprot = this.getString(solution, "uniprot");
 					String sequence = this.getString(solution, "pep_seq" );
+					String scoreString = this.getString(solution, "jpost_score");
+					double score = 0.0;
+					try {
+						score = Double.parseDouble(scoreString);
+					}
+					catch(Exception e) {
+					}
 
 					String mnemonic = "";
 					for(String key : mnemonicMap.keySet()) {
@@ -159,6 +166,7 @@ public class SetupService {
 					}
 					Peptide peptide = new Peptide(sequence);
 					peptide.setSequence(sequence);
+					peptide.setScore(score);
 					protein.getPeptides().add(peptide);
 				}
 			}
