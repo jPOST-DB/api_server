@@ -131,15 +131,19 @@ public class PeptideService {
 			}
 		}
 
-		List<Protein> cutOffProteins = new ArrayList<Protein>();
-		for(Protein protein : proteins) {
-			protein.cutOff(score);
-			if(protein.getPeptides().size() > 0) {
-				cutOffProteins.add(protein);
+
+		if(proteins != null) {
+			List<Protein> cutOffProteins = new ArrayList<Protein>();
+			for(Protein protein : proteins) {
+				protein.cutOff(score);
+				if(protein.getPeptides().size() > 0) {
+					cutOffProteins.add(protein);
+				}
 			}
+			proteins = cutOffProteins;
 		}
 
-		return cutOffProteins;
+		return proteins;
 	}
 
 	protected void saveCache(List<String> datasets, List<Protein> proteins) throws Exception {
